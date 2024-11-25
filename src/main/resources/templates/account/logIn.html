@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html 
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/defaultLayout}">
+<th:block layout:fragment="nav" th:replace="~{fragments/nav1 :: nav}"></th:block>
+<section layout:fragment="content">
+	<div id="section-title" class="border pl-0 justify-content-center">
+		<span>로그인</span>
+	</div>
+	<div id="section-content" class="border p-5 d-flex flex-column align-items-center">
+		<div class="w-25 m-5">
+			<input id="loginId" type="text" placeholder="아이디" class="form-control">
+			<input id="password" type="password" placeholder="비밀번호" class="form-control mt-3">
+			<span id="incorrect" class="text-danger" hidden><small>아이디와 비밀번호를 정확히 입력해주세요</small></span>
+			<div class="d-flex justify-content-between w-100">
+				<a href="/account/find-account"><small>비밀번호 찾기</small></a>
+				<a href="/account/sign-up"><small>회원가입</small></a>
+			</div>
+			<button type="button" id="login-button" class="btn-info form-control mt-3">로그인</button>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+	<script>
+		$(document).ready(function() {
+			
+			// 로그인
+			$("#login-button").on("click", function() {
+				let loginId = $("#loginId").val();
+				let password = $("#password").val();
+				
+				if (!loginId) {
+					alert("아이디를 입력하세요");
+					return;
+				}
+				
+				if (!password) {
+					alert("비밀번호를 입력하세요");
+					return;
+				}
+				
+				$.ajax({
+					type:"post"
+					,data:{"loginId":loginId, "password":password}
+					,url:"/account/log-in"
+					,success:function(data) {
+						alert("성공 메시지");
+					}
+					,error:function(e) {
+						alert("잠시 후 다시 시도해주세요");
+					}
+				});
+			});
+		});
+	</script>
+</th:block>

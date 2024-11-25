@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="headerFragment">
+	<header>
+		<div id="header-inner" class="d-flex justify-content-between h-100">
+			<div id="logo" class="d-flex align-items-center p-3"><a href="/" class="logo-font main-color">kcalculator</a></div>
+			<div id="menu" class="d-flex align-items-center">
+				<div class="p-3">
+					<a href="/diet/list">식단 공유</a>
+				</div>
+				<div class="p-3">
+					<a href="#">최저가 재료 찾기</a>
+				</div>
+			</div>
+			<div id="user-module" class="d-flex align-items-center">
+				<div class="p-3">
+					<a href="/account/log-in">로그인</a>
+					<a href="/account/profile" hidden>마이페이지</a>
+					<a href="/account/log-out" hidden>로그아웃</a>
+				</div>
+			</div>
+		</div>
+	</header>
+</th:block>
+</html>
