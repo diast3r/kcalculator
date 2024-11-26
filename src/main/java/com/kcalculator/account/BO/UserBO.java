@@ -1,20 +1,17 @@
 package com.kcalculator.account.BO;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Service;
 
-import com.kcalculator.account.dto.UserDTO;
 import com.kcalculator.account.entity.UserEntity;
 import com.kcalculator.account.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
-public class AccountBO {
+public class UserBO {
 	
 	private final UserRepository UserRepository;
 	
@@ -23,13 +20,13 @@ public class AccountBO {
 		
 		UserDTO userDTO = UserDTO.builder()
 				.id(userEntity.getId())
-				.profile_image_path(userEntity.getProfile_image_path())
-				.login_id(userEntity.getLogin_id())
+				.profileImagePath(userEntity.getProfileImagePath())
+				.loginId(userEntity.getLoginId())
 				.password(userEntity.getPassword())
 				.nickname(userEntity.getNickname())
 				.email(userEntity.getEmail())
-				.created_at(userEntity.getCreated_at())
-				.updated_at(userEntity.getUpdated_at())
+				.createdAt(userEntity.getCreatedAt())
+				.updatedAt(userEntity.getUpdatedAt())
 				.build();
 	 */
 	
@@ -42,7 +39,26 @@ public class AccountBO {
 	}
 	
 	
-	
-	
+	// 회원가입
+	public boolean addUser(String loginId, String password, 
+			String nickname, String email) {
+		UserEntity userEnttity = UserEntity.builder()
+				.profileImagePath(email)
+				.loginId(loginId)
+				.password(password)
+				.nickname(nickname)
+				.email(email)
+				.build();
+		
+		try {
+			UserRepository.save(userEnttity);
+		} catch(Exception e) {
+			throw new RuntimeException();
+//			log.info("[### UserBO] 회원가입 실패");
+//			return false;
+		}
+		
+		return true;
+	}
 	
 }
