@@ -1,9 +1,8 @@
 spring:
+  profiles:
+    include: db
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kcalculator?characterEncoding=UTF-8
-    username: kcalculator
-    password: +jG{ZzjCF_Ph6xT
   jpa:
     properties:
       hibernate:
