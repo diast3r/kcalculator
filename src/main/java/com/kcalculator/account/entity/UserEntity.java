@@ -35,13 +35,14 @@ public class UserEntity {
 	
 	private String password;
 	
+	private String passwordSalt;
+	
 	private String nickname;
 	
 	private String email;
 	
 	@CreationTimestamp 
 	private LocalDateTime createdAt;
-	
 	
 	@UpdateTimestamp 
 	private LocalDateTime updatedAt;

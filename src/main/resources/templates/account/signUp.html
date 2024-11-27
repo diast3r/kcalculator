@@ -102,11 +102,12 @@
 					,data:$("#sign-up-form").serialize()
 					,url:"/account/sign-up"
 					,success:function(data) {
-						alert(data.message);
+						if (data.code == 200) console.log(data.message);
+						if (data.code == 500) console.log(data.messgae);
 						// TODO 응답값 받기
 					}
 					,error:function(e) {
-						//alert("잠시 후 다시 시도해주세요");
+						alert("잠시 후 다시 시도해주세요");
 						// TODO 
 					}
 				});
@@ -132,6 +133,7 @@
 					,url:"/account/is-duplicate-id"
 					,data:{"loginId":$("#login-id").val().trim()}
 					,success:function(data) {
+						$("#duplicate-check-failed").hide();
 						// 중복인 경우 
 						if (data.result == true) {
 							$("#duplicate-id").show();

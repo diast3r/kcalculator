@@ -1,8 +1,5 @@
 package com.kcalculator.account;
 
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kcalculator.account.BO.UserBO;
+import com.kcalculator.account.dto.UserSimpleDTO;
+import com.kcalculator.common.Encrypter;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class AccountRestController {
 	
+	private final Encrypter encrypter;
 	private final UserBO userBO;
 	
 	// 아이디 중복확인
@@ -54,26 +55,56 @@ public class AccountRestController {
 			@RequestParam("email") String email) {
 		Map<String, Object> result = new HashMap<>();
 		
-		// 암호화
-		try {
-			
-			
-		} catch(Exception e) {
-			log.info("[### AcountRestConroller 비밀번호 암호화 실패] password:{}, e.class:{}, e.cause:{}", password, e.getClass(), e.getCause());
-			result.put("message", "에러 확인 요망");
-			result.put("code", 200);
-			return result;
-		}
-		
 		// DB insert
-		if (!userBO.addUser(loginId, password, nickname, email)) {
-			result.put("code", 200);
+		if (!userBO.signUp(loginId, password , nickname, email)) {
+			result.put("code", 500);
 			result.put("message", "에러 확인 요망");
 			return result;
 		}
 		
-		result.put("message", "응답성공");
-		return result;
+		result.put("message", "회원가입 성공");
+		result.put("code", 200);
 		
+		return result;
+	}
+	
+	// 로그인
+	@PostMapping("/log-in")
+	public Map<String, Object> logIn(
+			@RequestParam("loginId") String loginId,
+			@RequestParam("password") String password,
+			HttpSession session) {
+		Map<String, Object> result = new HashMap<>();
+		
+		UserSimpleDTO userSimple = userBO.logIn(loginId, password);
+		
+		if (userSimple == null) {
+			result.put("code", 401);
+			result.put("message", "회원정보 불일치");
+			return result;
+		}
+		
+		
+		
+		
+		session.setAttribute("id", userSimple.getId());
+		session.setAttribute("loginId", userSimple.getLoginId());
+		session.setAttribute("nickname", userSimple.getNickname());
+		
+		result.put("code", 200);
+		result.put("message", "로그인 성공");
+		return result;
+	}
+	
+	// 로그아웃
+	@GetMapping("/log-out")
+	public Map<String, Object> logOut(HttpSession session) {
+		session.invalidate();
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("code", 200);
+		result.put("message", "로그아웃 성공");
+		
+		return result;
 	}
 }

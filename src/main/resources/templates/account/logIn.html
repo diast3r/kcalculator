@@ -46,7 +46,7 @@
 					,data:{"loginId":loginId, "password":password}
 					,url:"/account/log-in"
 					,success:function(data) {
-						alert("성공 메시지");
+						alert(data.message);
 					}
 					,error:function(e) {
 						alert("잠시 후 다시 시도해주세요");
