@@ -23,7 +23,7 @@ class UserBO테스트 {
 		String nickname = "테스트 닉네임";
 		String email = "테스트 이메일@test.com";
 		
-		userBO.signUp(loginId, password, nickname, email);
+		userBO.addUser(loginId, password, nickname, email);
 		log.info("{}", userBO.logIn(loginId, password));
 
 	}

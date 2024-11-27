@@ -1,5 +1,6 @@
 package com.kcalculator.account;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import com.kcalculator.account.BO.UserBO;
 import com.kcalculator.account.dto.UserSimpleDTO;
 import com.kcalculator.common.Encrypter;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +35,7 @@ public class AccountRestController {
 		Map<String, Object> result = new HashMap<>();
 
 		// 중복확인
-		boolean isDuplicatedId = userBO.isDuplicateId(loginId);
+		boolean isDuplicatedId = (userBO.getUserSimpleByLoginId(loginId) != null);
 		
 		if (isDuplicatedId) {
 			result.put("result", true);
@@ -55,8 +58,11 @@ public class AccountRestController {
 			@RequestParam("email") String email) {
 		Map<String, Object> result = new HashMap<>();
 		
+		// TODO 아이디, 패스워드, 닉네임, 이메일 등 유효성 검사
+		
+		
 		// DB insert
-		if (!userBO.signUp(loginId, password , nickname, email)) {
+		if (!userBO.addUser(loginId, password , nickname, email)) {
 			result.put("code", 500);
 			result.put("message", "에러 확인 요망");
 			return result;
@@ -73,6 +79,7 @@ public class AccountRestController {
 	public Map<String, Object> logIn(
 			@RequestParam("loginId") String loginId,
 			@RequestParam("password") String password,
+			HttpServletResponse response, 
 			HttpSession session) {
 		Map<String, Object> result = new HashMap<>();
 		
@@ -93,18 +100,20 @@ public class AccountRestController {
 		
 		result.put("code", 200);
 		result.put("message", "로그인 성공");
+		
 		return result;
 	}
 	
 	// 로그아웃
 	@GetMapping("/log-out")
-	public Map<String, Object> logOut(HttpSession session) {
-		session.invalidate();
+	public Map<String, Object> logOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().invalidate();
 		
 		Map<String, Object> result = new HashMap<>();
 		result.put("code", 200);
 		result.put("message", "로그아웃 성공");
 		
+		response.sendRedirect("/diet/list");
 		return result;
 	}
 }

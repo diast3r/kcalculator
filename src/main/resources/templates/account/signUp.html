@@ -137,11 +137,13 @@
 						// 중복인 경우 
 						if (data.result == true) {
 							$("#duplicate-id").show();
+							$("#valid-id").hide();
 							return;
 						}
 						// 중복아닌 경우
 						if (data.result == false) {
 							$("#valid-id").show();
+							$("#duplicate-id").hide();
 							isLoginIdChecked = true;
 							return;
 						}

@@ -9,7 +9,7 @@
 		<span>로그인</span>
 	</div>
 	<div id="section-content" class="border p-5 d-flex flex-column align-items-center">
-		<div class="w-25 m-5">
+		<form id="login-form" class="w-25 m-5">
 			<input id="loginId" type="text" placeholder="아이디" class="form-control">
 			<input id="password" type="password" placeholder="비밀번호" class="form-control mt-3">
 			<span id="incorrect" class="text-danger" hidden><small>아이디와 비밀번호를 정확히 입력해주세요</small></span>
@@ -17,8 +17,8 @@
 				<a href="/account/find-account"><small>비밀번호 찾기</small></a>
 				<a href="/account/sign-up"><small>회원가입</small></a>
 			</div>
-			<button type="button" id="login-button" class="btn-info form-control mt-3">로그인</button>
-		</div>
+			<button type="submit" id="login-button" class="btn-info form-control mt-3">로그인</button>
+		</form>
 	</div>
 </section>
 
@@ -27,18 +27,19 @@
 		$(document).ready(function() {
 			
 			// 로그인
-			$("#login-button").on("click", function() {
+			$("#login-form").on("submit", function(e) {
+				e.preventDefault();
 				let loginId = $("#loginId").val();
 				let password = $("#password").val();
 				
 				if (!loginId) {
 					alert("아이디를 입력하세요");
-					return;
+					return false;
 				}
 				
 				if (!password) {
 					alert("비밀번호를 입력하세요");
-					return;
+					return false;
 				}
 				
 				$.ajax({

@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class UserSimpleDTO {
 	private int id;
+	private String profileImagePath;
 	private String loginId;
 	private String nickname;
 }
