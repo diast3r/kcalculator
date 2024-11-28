@@ -14,9 +14,13 @@
 			</div>
 			<div id="user-module" class="d-flex align-items-center">
 				<div class="p-3">
+				<th:block th:if="${session.loginId != null}">
+					<a th:href="|/user/${session.loginId}/profile|">마이페이지</a>
+					<a href="/account/log-out">로그아웃</a>
+				</th:block>
+				<th:block th:unless="${session.loginId != null}">
 					<a href="/account/log-in">로그인</a>
-					<a href="/account/profile" hidden>마이페이지</a>
-					<a href="/account/log-out" hidden>로그아웃</a>
+				</th:block>
 				</div>
 			</div>
 		</div>

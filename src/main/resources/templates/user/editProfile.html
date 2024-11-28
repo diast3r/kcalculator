@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html 
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content">
+	<div id="section-title">
+		<span>회원 정보 변경</span>
+	</div>
+	<div id="section-content">
+		<!--  TODO 마크업 - 내 정보 수정 -->
+		<form id="edit-form" method="post">
+			<div>
+				<label>닉네임</label>
+				<input name="nickname" type="text" placeholder="닉네임">
+			</div>
+			<div>
+				<label>프로필 사진</label>
+				<input name="file" type="file" value="프로필 사진">
+			</div>
+			<div>
+				<label>이메일</label>
+				<input name="email" type="email" placeholder="이메일">
+			</div>
+			<button type="submit">저장</button>
+		</form>		
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+	<script>
+		$("#edit-form").on("submit", function(e) {
+			e.preventDefault();
+			alert("submit");
+			
+			let formData = new FormData();
+			formData.append("nickname", $("input[name=nickname]").val().trim());
+			formData.append("file", $("input[name=file]")[0].files[0]);
+			formData.append("email", $("input[name=email]").val().trim());
+			
+			$.ajax({
+				type:"post"
+				,data:formData
+				,url:"/user/" + "[[${session.loginId}]]" + "/profile/edit"
+				,processData:false
+				,contentType:false
+				,enctype:"multipart/form-data"
+				,success:function(data) {
+					alert(data.message);
+				}
+				,error:function(e) {
+					alert("실패");
+				}
+			});
+			
+		});
+	</script>
+</th:block>

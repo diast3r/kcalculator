@@ -58,7 +58,7 @@ public class AccountRestController {
 			@RequestParam("email") String email) {
 		Map<String, Object> result = new HashMap<>();
 		
-		// TODO 아이디, 패스워드, 닉네임, 이메일 등 유효성 검사
+		// TODO 유효성 검사 - 회원 가입 시 유효성 검사
 		
 		
 		// DB insert
@@ -105,6 +105,7 @@ public class AccountRestController {
 	}
 	
 	// 로그아웃
+	// TODO #7 로그아웃 시 게시판으로 리다이렉트(Interceptor에서 처리)
 	@GetMapping("/log-out")
 	public Map<String, Object> logOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().invalidate();
@@ -116,4 +117,6 @@ public class AccountRestController {
 		response.sendRedirect("/diet/list");
 		return result;
 	}
+	
+	// TODO 기능 구현 - 아이디, 비번 찾기(RestController)
 }

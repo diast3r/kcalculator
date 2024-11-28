@@ -46,4 +46,10 @@ public class UserEntity {
 	
 	@UpdateTimestamp 
 	private LocalDateTime updatedAt;
+	
+	public void updateProfile(String profileImagePath, String nickname, String email) {
+		this.profileImagePath = profileImagePath;
+		this.nickname = nickname;
+		this.email = email;
+	}
 }

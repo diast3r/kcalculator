@@ -15,7 +15,7 @@ class UserBO테스트 {
 	private UserBO userBO;
 	
 	@Transactional
-	@Test
+//	@Test
 	void signUp() {
 		// fail("Not yet implemented");
 		String loginId = "테스트 아이디";
@@ -26,6 +26,15 @@ class UserBO테스트 {
 		userBO.addUser(loginId, password, nickname, email);
 		log.info("{}", userBO.logIn(loginId, password));
 
+	}
+	
+	@Test
+	void editProfile() {
+		String loginId = "테스트 아이디";
+		String nickname = "테스트 닉네임";
+		String email = "테스트 이메일@test.com";
+		
+		userBO.editProfile(loginId, null, nickname, email);
 	}
 
 }

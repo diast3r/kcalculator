@@ -3,12 +3,15 @@ package com.kcalculator.account.BO;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kcalculator.account.dto.UserSimpleDTO;
 import com.kcalculator.account.entity.UserEntity;
 import com.kcalculator.account.repository.UserRepository;
 import com.kcalculator.common.Encrypter;
+import com.kcalculator.common.FileManagerService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,15 +22,9 @@ public class UserBO {
 	
 	private final Encrypter encrypter;
 	private final UserRepository userRepository;
-	private final FileManagerService fileUploader;
+	private final FileManagerService fileManager;
 	
-	/*
-	public UserBO (Encrypter encrypter, UserRepository userRpeository) {
-		this.encrypter = encrypter;
-		this.userRepository = userRpeository;
-	}
-	*/
-	
+	// TODO 기능 구현 - 비밀번호 수정(BO)
 	/*
 		UserEntity userEntity = userRepository.findByLoginId(loginId);
 		
@@ -44,7 +41,11 @@ public class UserBO {
 				.build();
 	 */
 	
-	
+	/**
+	 * 아이디로 사용자를 조회하고 결과 없을 경우 null
+	 * @param loginId - String
+	 * @return UserSimpleDTO 또는 null
+	 */
 	public UserSimpleDTO getUserSimpleByLoginId(String loginId) {
 		UserEntity userEntity = userRepository.findByLoginId(loginId).orElse(null);
 		
@@ -60,15 +61,20 @@ public class UserBO {
 		
 	}
 	
-	// 회원가입
-	public boolean signUp(String loginId, String password,
+	/**
+	 * 회원가입
+	 * @param loginId - 로그인에 사용하는 아이디
+	 * @param password - 비밀번호
+	 * @param nickname - 닉네임
+	 * @param email - 이메일 
+	 * @return 가입 성공 시 {@code true}<br> 실패 시 {@code false}
+	 */
+	public boolean addUser(String loginId, String password,
 			String nickname, String email) {
 		// 이미 존재하는 사용자인지 확인
-		if (isDuplicateId(loginId)) return false;
+		if (userRepository.findByLoginId(loginId).orElse(null) == null) return false;
 		
-		// TODO 아이디, 패스워드, 닉네임, 이메일 등 유효성 검사
-		
-		// 암호화
+		// 암호화(salt를 곁들인)
 		Map<String, String> passwordMap = encrypter.generateHash(password);
 		String hashedPassword = passwordMap.get("encryptedString");
 		String salt = passwordMap.get("salt");
@@ -89,6 +95,42 @@ public class UserBO {
 			return false;
 		}
 		
+	}
+	
+	// TODO 기능 구현 - 프로필 수정 시 null값은 
+	// 프로필 수정
+	@Transactional
+	public boolean editProfile(String loginId, MultipartFile file, String nickname, String email) {
+		UserEntity user = userRepository.findByLoginId(loginId).orElseThrow();
+		String filePath;
+		if (file != null) {
+			filePath = fileManager.uploadFile(file, loginId);
+		} else {
+			filePath = user.getProfileImagePath();
+		}
+
+		String oldFilePath = user.getProfileImagePath();
+		user.updateProfile(filePath, nickname, email);
+//		user = UserEntity.builder()
+//				.id(user.getId())
+//				.profileImagePath(filePath)
+//				.nickname(nickname)
+//				.email(email)
+//				.loginId(user.getLoginId())
+//				.password(user.getPassword())
+//				.passwordSalt(user.getPasswordSalt())
+//				.createdAt(user.getCreatedAt())
+//				.updatedAt(user.getUpdatedAt())
+//				.build();
+		
+//		try {
+//			userRepository.save(user);
+//		} catch(Exception e) {
+//			return false;
+//		}
+		fileManager.deleteFile(oldFilePath);
+		
+		return true;
 	}
 	
 	

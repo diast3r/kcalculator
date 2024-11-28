@@ -38,7 +38,7 @@ a, a:hover {
 }
 
 .main-color {
-	color: #3953FF;
+	color: #3953FF !important;
 }
 
 #logo {
