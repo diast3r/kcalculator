@@ -13,8 +13,7 @@
 			<span th:text="|닉네임  ${user.nickname}|"></span>
 		</div>
 		<div>
-			<!-- FIXME 마크업 - 프로필 사진이 안 뜸 -->
-			<img th:src="@{${user.profileImagePath}}" alt="프로필 사진">
+			<img th:src="${user.profileImagePath}" alt="프로필 사진" width="100px">
 		</div>
 		<div th:if="${session.loginId != null}">
 			<a class="btn btn-info" th:href="|/user/${user.loginId}/profile/edit|">수정하기</a>

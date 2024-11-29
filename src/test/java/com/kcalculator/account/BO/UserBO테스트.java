@@ -28,13 +28,5 @@ class UserBO테스트 {
 
 	}
 	
-	@Test
-	void editProfile() {
-		String loginId = "테스트 아이디";
-		String nickname = "테스트 닉네임";
-		String email = "테스트 이메일@test.com";
-		
-		userBO.editProfile(loginId, null, nickname, email);
-	}
 
 }

@@ -23,10 +23,12 @@ public class UserRestController {
 	private final UserBO userBO;
 	
 	// 민감하지 않은 정보 수정(닉네임, 프사, 이메일)
+	// TODO AuthReuqired
 	@PostMapping("/profile/edit")
 	public Map<String, Object> editProfile(
 			@PathVariable("loginId") String loginId, 
-			@RequestParam(value = "file", required = false) MultipartFile file, 
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			@RequestParam("resetProfileImage") boolean resetProfileImage,
 			@RequestParam(value = "nickname", required = false) String nickname, 
 			@RequestParam("email") String email,
 			HttpSession session) {
@@ -46,7 +48,7 @@ public class UserRestController {
 			return result;
 		}
 		
-		if (userBO.editProfile(loginId, file, nickname, email) == false) {
+		if (userBO.editProfile(loginId, file, resetProfileImage, nickname, email) == false) {
 			result.put("code", 500);
 			result.put("message", "정보 수정 실패");
 			

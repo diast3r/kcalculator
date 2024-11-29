@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kcalculator.account.dto.UserProfileDTO;
 import com.kcalculator.account.dto.UserSimpleDTO;
 import com.kcalculator.account.entity.UserEntity;
 import com.kcalculator.account.repository.UserRepository;
@@ -58,7 +59,25 @@ public class UserBO {
 					.build();
 		}
 		return null;
-		
+	}
+	
+	/**
+	 * 프로필 수정을 위한 DTO
+	 * @param loginId
+	 * @return
+	 */
+	public UserProfileDTO getUserProfileByLoginId(String loginId) {
+		UserEntity userEntity = userRepository.findByLoginId(loginId).orElse(null);
+		if (userEntity != null) {
+			return UserProfileDTO.builder()
+					.id(userEntity.getId())
+					.profileImagePath(userEntity.getProfileImagePath())
+					.loginId(userEntity.getLoginId())
+					.nickname(userEntity.getNickname())
+					.email(userEntity.getEmail())
+					.build();
+		}
+		return null;
 	}
 	
 	/**
@@ -72,7 +91,7 @@ public class UserBO {
 	public boolean addUser(String loginId, String password,
 			String nickname, String email) {
 		// 이미 존재하는 사용자인지 확인
-		if (userRepository.findByLoginId(loginId).orElse(null) == null) return false;
+		if (userRepository.findByLoginId(loginId).orElse(null) != null) return false;
 		
 		// 암호화(salt를 곁들인)
 		Map<String, String> passwordMap = encrypter.generateHash(password);
@@ -97,38 +116,27 @@ public class UserBO {
 		
 	}
 	
-	// TODO 기능 구현 - 프로필 수정 시 null값은 
-	// 프로필 수정
 	@Transactional
-	public boolean editProfile(String loginId, MultipartFile file, String nickname, String email) {
+	public boolean editProfile(String loginId, MultipartFile file, boolean resetProfileImage, String nickname, String email) {
 		UserEntity user = userRepository.findByLoginId(loginId).orElseThrow();
 		String filePath;
-		if (file != null) {
+		
+
+		if (file != null) { // 프사 업데이트
 			filePath = fileManager.uploadFile(file, loginId);
-		} else {
+			// NOTE 만약 업데이트 실패하면 프사만 날아가는데, 개선하려면 서순을 바꿔야할 수도 있을 듯
+			fileManager.deleteFile(user.getProfileImagePath());
+		} else { // 프사 유지
 			filePath = user.getProfileImagePath();
 		}
-
-		String oldFilePath = user.getProfileImagePath();
-		user.updateProfile(filePath, nickname, email);
-//		user = UserEntity.builder()
-//				.id(user.getId())
-//				.profileImagePath(filePath)
-//				.nickname(nickname)
-//				.email(email)
-//				.loginId(user.getLoginId())
-//				.password(user.getPassword())
-//				.passwordSalt(user.getPasswordSalt())
-//				.createdAt(user.getCreatedAt())
-//				.updatedAt(user.getUpdatedAt())
-//				.build();
 		
-//		try {
-//			userRepository.save(user);
-//		} catch(Exception e) {
-//			return false;
-//		}
-		fileManager.deleteFile(oldFilePath);
+		if (resetProfileImage) { // 프사 null로 초기화
+			fileManager.deleteFile(user.getProfileImagePath());
+			filePath = null;
+		}
+
+		user.updateProfile(filePath, nickname, email);
+		
 		
 		return true;
 	}

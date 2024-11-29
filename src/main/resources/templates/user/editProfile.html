@@ -12,16 +12,20 @@
 		<form id="edit-form" method="post">
 			<div>
 				<label>닉네임</label>
-				<input name="nickname" type="text" placeholder="닉네임">
+				<input name="nickname" th:value="${user.nickname}" type="text" placeholder="닉네임">
 			</div>
 			<div>
+				<!-- TODO 마크업 - 프로필 사진 삭제 버튼 기능 -->
 				<label>프로필 사진</label>
+				<img th:src="${user.profileImagePath}" alt="프로필 사진" width="100px">
 				<input name="file" type="file" value="프로필 사진">
+				<button type="button" id="image-delete-button">프로필 사진 초기화</button>
 			</div>
 			<div>
 				<label>이메일</label>
-				<input name="email" type="email" placeholder="이메일">
+				<input name="email" th:value="${user.email}" type="email" placeholder="이메일">
 			</div>
+			<button type="button" id="reset-button">초기화</button>
 			<button type="submit">저장</button>
 		</form>		
 	</div>
@@ -29,14 +33,19 @@
 
 <th:block layout:fragment="script">
 	<script>
+	$(document).ready(function() {
+		let resetProfileImage = false;
+		
 		$("#edit-form").on("submit", function(e) {
 			e.preventDefault();
+			<!-- TODO 유효성 검사 - 프로필 수정 js -->
 			alert("submit");
 			
 			let formData = new FormData();
 			formData.append("nickname", $("input[name=nickname]").val().trim());
 			formData.append("file", $("input[name=file]")[0].files[0]);
 			formData.append("email", $("input[name=email]").val().trim());
+			formData.append("resetProfileImage", resetProfileImage);
 			
 			$.ajax({
 				type:"post"
@@ -54,5 +63,16 @@
 			});
 			
 		});
+		
+		$("#image-delete-button").on("click", function() {
+			$("img").attr("src", "/images/blank_profile_image/blank.png");
+			resetProfileImage = true;
+		});
+		
+		$("#reset-button").on("click", function() {
+			$("#edit-form").load(location.href + "#edit-form");
+			resetProfileImage = false;
+		})
+	});
 	</script>
 </th:block>
