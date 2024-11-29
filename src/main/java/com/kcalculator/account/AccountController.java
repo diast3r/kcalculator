@@ -11,7 +11,6 @@ import com.kcalculator.common.annotation.LoginRequired;
 @RequestMapping("/account")
 public class AccountController {
 	
-	// TODO #7 interceptor 활용해서 이미 로그인한 사람은 다른 페이지(이전 페이지 또는 게시판)로 리다이렉트
 	// TODO 기능 구현 - 아이디, 비번 찾기(Controller)
 	@GetMapping("/log-in")
 	public String logIn() {

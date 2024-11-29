@@ -105,7 +105,6 @@ public class AccountRestController {
 	}
 	
 	// 로그아웃
-	// TODO #7 로그아웃 시 게시판으로 리다이렉트(Interceptor에서 처리)
 	@GetMapping("/log-out")
 	public Map<String, Object> logOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().invalidate();

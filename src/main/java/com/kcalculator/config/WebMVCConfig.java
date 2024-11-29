@@ -6,6 +6,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.kcalculator.common.FileManagerService;
+import com.kcalculator.interceptor.AccountInterceptor;
 import com.kcalculator.interceptor.PermissionInterceptor;
 import com.kcalculator.interceptor.UserInterceptor;
 
@@ -17,10 +18,17 @@ public class WebMVCConfig implements WebMvcConfigurer {
 	
 private final UserInterceptor userInterceptor;
 private final PermissionInterceptor permissionInterceptor;
+private final AccountInterceptor accountInterceptor;
 	
 	// 인터셉터 설정
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+		// 로그인한 사람이 /account 접속 시 /diet/list로 리다이렉트
+		registry
+		.addInterceptor(accountInterceptor)
+		.addPathPatterns("/account/**")
+		.excludePathPatterns("/account/log-out");
+		
 		// 사용자 없으면 userNotFound로 포워드
 		registry
 		.addInterceptor(userInterceptor)
