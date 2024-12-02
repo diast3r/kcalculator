@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kcalculator.account.BO.UserBO;
+import com.kcalculator.account.bo.UserBO;
+import com.kcalculator.common.annotation.AuthRequired;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class UserRestController {
 	private final UserBO userBO;
 	
 	// 민감하지 않은 정보 수정(닉네임, 프사, 이메일)
-	// TODO AuthReuqired
+	@AuthRequired
 	@PostMapping("/profile/edit")
 	public Map<String, Object> editProfile(
 			@PathVariable("loginId") String loginId, 

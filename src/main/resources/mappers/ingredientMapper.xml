@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcalculator.user.ingredient.mapper.IngredientMapper">
+	<select id="selectProcessedIngredientListMatchFoodNameAndManufacturer" parameterType="string" resultType="com.kcalculator.user.ingredient.dto.ProcessedIngredientDTO">
+		SELECT
+			`id`
+			,`food_code`
+			,`food_name`
+			,`product_code`
+			,`net_weight`
+			,`calorie_per_serving`
+			,`carbohydrates_per_serving`
+			,`protein_per_serving`
+			,`fat_per_serving`
+			,`serving_size`
+			,`manufacturer`
+		FROM
+			`ingredient_processed`
+		WHERE
+			MATCH(`food_name`, `manufacturer`) AGAINST(#{keyword} IN BOOLEAN MODE)
+		LIMIT 30
+	</select>
+	
+	<select id="selectRawIngredientListMatchFoodNameAndManufacturer" parameterType="string" resultType="com.kcalculator.user.ingredient.dto.RawIngredientDTO">
+		SELECT
+			`id`
+			,`food_code`
+			,`food_name`
+			,`calorie_per_serving`
+			,`carbohydrates_per_serving`
+			,`protein_per_serving`
+			,`fat_per_serving`
+		FROM
+			`ingredient_raw`
+		WHERE
+			MATCH(`food_name`) AGAINST(#{keyword} IN BOOLEAN MODE)
+		LIMIT 30
+	</select>
+</mapper>

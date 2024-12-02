@@ -1,4 +1,4 @@
-package com.kcalculator.account.BO;
+package com.kcalculator.account.bo;
 
 import java.util.Map;
 
@@ -42,7 +42,7 @@ public class UserBO {
 				.build();
 	 */
 	
-	/**
+	/** TODO getUserProfileByLoginID()와 합치기
 	 * 아이디로 사용자를 조회하고 결과 없을 경우 null
 	 * @param loginId - String
 	 * @return UserSimpleDTO 또는 null
@@ -61,7 +61,7 @@ public class UserBO {
 		return null;
 	}
 	
-	/**
+	/** TODO UserSimpleDTO와 UserProfileDTO 하나로 합치기
 	 * 프로필 수정을 위한 DTO
 	 * @param loginId
 	 * @return
@@ -116,22 +116,34 @@ public class UserBO {
 		
 	}
 	
+	/**
+	 * 프로필 수정
+	 * @param loginId
+	 * @param file
+	 * @param resetProfileImage
+	 * @param nickname
+	 * @param email
+	 * @return
+	 */
 	@Transactional
 	public boolean editProfile(String loginId, MultipartFile file, boolean resetProfileImage, String nickname, String email) {
 		UserEntity user = userRepository.findByLoginId(loginId).orElseThrow();
+		String oldFilePath = user.getProfileImagePath();
 		String filePath;
 		
 
 		if (file != null) { // 프사 업데이트
 			filePath = fileManager.uploadFile(file, loginId);
 			// NOTE 만약 업데이트 실패하면 프사만 날아가는데, 개선하려면 서순을 바꿔야할 수도 있을 듯
-			fileManager.deleteFile(user.getProfileImagePath());
+			if (oldFilePath != null) {
+				fileManager.deleteFile(oldFilePath);
+			}
 		} else { // 프사 유지
 			filePath = user.getProfileImagePath();
 		}
 		
-		if (resetProfileImage) { // 프사 null로 초기화
-			fileManager.deleteFile(user.getProfileImagePath());
+		if (resetProfileImage && oldFilePath != null) { // 프사 null로 초기화
+			fileManager.deleteFile(oldFilePath);
 			filePath = null;
 		}
 
@@ -142,7 +154,12 @@ public class UserBO {
 	}
 	
 	
-	// 로그인
+	/**
+	 * 로그인
+	 * @param loginId
+	 * @param password
+	 * @return 아이디와 비번 일치하면 해당하는 UserSimPleDTO, 아니면 null  
+	 */
 	public UserSimpleDTO logIn(String loginId, String password) {
 			
 		UserEntity user = userRepository.findByLoginId(loginId).orElse(null);

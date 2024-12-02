@@ -15,11 +15,10 @@
 				<input name="nickname" th:value="${user.nickname}" type="text" placeholder="닉네임">
 			</div>
 			<div>
-				<!-- TODO 마크업 - 프로필 사진 삭제 버튼 기능 -->
 				<label>프로필 사진</label>
-				<img th:src="${user.profileImagePath}" alt="프로필 사진" width="100px">
+				<img th:src="${user.profileImagePath != null ? user.profileImagePath : '/images/blank_profile_image/blank.png'}" alt="프로필 사진" width="100px">
 				<input name="file" type="file" value="프로필 사진">
-				<button type="button" id="image-delete-button">프로필 사진 초기화</button>
+				<button type="button" id="image-delete-button">프로필 사진 삭제</button>
 			</div>
 			<div>
 				<label>이메일</label>
@@ -36,6 +35,7 @@
 	$(document).ready(function() {
 		let resetProfileImage = false;
 		
+		// 저장 버튼
 		$("#edit-form").on("submit", function(e) {
 			e.preventDefault();
 			<!-- TODO 유효성 검사 - 프로필 수정 js -->
@@ -55,6 +55,7 @@
 				,contentType:false
 				,enctype:"multipart/form-data"
 				,success:function(data) {
+					location.reload();
 					alert(data.message);
 				}
 				,error:function(e) {
@@ -64,13 +65,15 @@
 			
 		});
 		
+		// 프사 삭제 버튼
 		$("#image-delete-button").on("click", function() {
 			$("img").attr("src", "/images/blank_profile_image/blank.png");
 			resetProfileImage = true;
 		});
 		
+		// 초기화 버튼
 		$("#reset-button").on("click", function() {
-			$("#edit-form").load(location.href + "#edit-form");
+			location.reload();
 			resetProfileImage = false;
 		})
 	});

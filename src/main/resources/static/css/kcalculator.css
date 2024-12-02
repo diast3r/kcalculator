@@ -66,3 +66,12 @@ section {
 	min-height: 904px;
 }
 
+.scroll {
+	overflow-y:scroll;
+}
+
+.text-overflow-ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

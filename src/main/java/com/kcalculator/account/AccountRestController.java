@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kcalculator.account.BO.UserBO;
+import com.kcalculator.account.bo.UserBO;
 import com.kcalculator.account.dto.UserSimpleDTO;
 import com.kcalculator.common.Encrypter;
 
@@ -86,13 +86,10 @@ public class AccountRestController {
 		UserSimpleDTO userSimple = userBO.logIn(loginId, password);
 		
 		if (userSimple == null) {
-			result.put("code", 401);
+			result.put("code", 200);
 			result.put("message", "회원정보 불일치");
 			return result;
 		}
-		
-		
-		
 		
 		session.setAttribute("id", userSimple.getId());
 		session.setAttribute("loginId", userSimple.getLoginId());

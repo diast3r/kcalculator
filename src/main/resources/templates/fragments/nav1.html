@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 		
-<th:block th:fragment="nav" class="contents d-flex justify-content-center">
+<th:block th:if="${session.loginId == user.loginId}" th:fragment="nav" class="contents d-flex justify-content-center">
 	<nav class="d-flex justify-content-center">
 		<ul class="nav nav-fill w-75">
 			<!-- TODO 마크업 - href 작성, nav 구성 생각해보기 -->
 			<li class="nav-item"><a href="#" class="nav-link">내 식단</a></li>
 			<li class="nav-item"><a th:href="|/user/${session.loginId}/profile|" class="nav-link">내 정보</a></li>
-			<li class="nav-item"><a href="#" class="nav-link">내 재료</a></li>
+			<li class="nav-item"><a th:href="|/user/${session.loginId}/ingredient|" class="nav-link">내 재료</a></li>
 		</ul>
 	</nav>
 </th:block>

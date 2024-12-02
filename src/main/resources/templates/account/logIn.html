@@ -3,7 +3,6 @@
 		xmlns:th="http://www.thymeleaf.org"
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{layout/defaultLayout}">
-<th:block layout:fragment="nav" th:replace="~{fragments/nav1 :: nav}"></th:block>
 <section layout:fragment="content">
 	<div id="section-title" class="border pl-0 justify-content-center">
 		<span>로그인</span>
@@ -47,7 +46,11 @@
 					,data:{"loginId":loginId, "password":password}
 					,url:"/account/log-in"
 					,success:function(data) {
-						alert(data.message);
+						if (data.message == "로그인 성공") {
+							location.href = "/user/" + loginId + "/profile";
+						} else if (data.message == "회원정보 불일치") {
+							alert("아이디, 비밀번호를 확인해주세요.");
+						}
 					}
 					,error:function(e) {
 						alert("잠시 후 다시 시도해주세요");

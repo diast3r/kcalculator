@@ -8,7 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.kcalculator.account.BO.UserBO;
+import com.kcalculator.account.bo.UserBO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ public class UserInterceptor implements HandlerInterceptor {
 		return true;
 		
 	}
-	// TODO 인터셉터 - PermissionInterceptor과 UserInterceptor의 동작 순서가 꼬이지 않게 잘 만져주기
+	// TODO 인터셉터 - UserInterceptor가 먼저 동작하면 PermissionInterceptor는 동작하지 않게 하기.
 	@Override
 	public void postHandle(HttpServletRequest request, 
 			HttpServletResponse response, Object handler,
