@@ -30,8 +30,6 @@ public class PermissionInterceptor implements HandlerInterceptor {
 			HttpServletResponse response, Object handler) throws IOException, ServletException {
 		HttpSession session = request.getSession();
 		String loginId = (String) session.getAttribute("loginId");
-		log.info("{}", request.getRequestURI());
-		log.info("{}", session.getAttribute("loginId"));
 		
 		if (!(handler instanceof HandlerMethod)) {
 			return true;

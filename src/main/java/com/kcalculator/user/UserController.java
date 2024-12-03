@@ -11,6 +11,7 @@ import com.kcalculator.account.dto.UserSimpleDTO;
 import com.kcalculator.common.annotation.AuthRequired;
 import com.kcalculator.user.ingredient.bo.IngredientBO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,16 +36,31 @@ public class UserController {
 	
 	@AuthRequired
 	@GetMapping("/{loginId}/profile/edit")
-	public String editProfile(@PathVariable("loginId") String loginId, Model model) {
+	public String editProfile(HttpSession session, Model model) {
+		String loginId = (String)session.getAttribute("loginId");
+		
 		model.addAttribute("user", userBO.getUserProfileByLoginId(loginId));
 		return "user/editProfile";
 	}
 	
 	@AuthRequired
-	@GetMapping("/{loginId}/ingredient")
-	public String ingredient(@PathVariable("loginId") String loginId, Model model) {
+	@GetMapping("/{loginId}/ingredient/register")
+	public String registerIngredient(HttpSession session, Model model) {
+		String loginId = (String)session.getAttribute("loginId");
+		
 		model.addAttribute("user", userBO.getUserProfileByLoginId(loginId));
-		return "user/ingredient";
+		// TODO 기능 구현 - 내 재료 페이징
+		return "user/registerIngredient";
 	}
 	
+	@AuthRequired
+	@GetMapping("/{loginId}/ingredient")
+	public String ingredient(HttpSession session, Model model) {
+		Integer userId = (Integer) session.getAttribute("id");
+		
+		model.addAttribute("myIngredient", ingredientBO.getMyIngredientList(userId));
+		model.addAttribute("myCustomIngredients", ingredientBO.getMyCustomIngredientList(userId));
+		
+		return "user/ingredient";
+	}
 }

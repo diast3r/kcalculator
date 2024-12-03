@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html 
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/defaultLayout}">
+<th:block layout:fragment="nav" th:replace="~{fragments/nav1 :: nav}"></th:block>
+<section layout:fragment="content">
+	<div id="section-title">
+		<span>재료 추가</span>
+	</div>
+	<div id="section-content">
+		<!-- 가공식품 조회 -->
+		<div id="processed-ingredients">
+			<div class="d-flex align-items-center mb-3">
+				<span class="mr-2">가공식품 검색</span>
+				<input id="processed-ingredients-keyword" placeholder="식품명, 제조사명">
+				<button id="processed-ingredients-search">검색</button>
+			</div>
+			
+			<div style="height:150px;" class="scroll border">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>상품명</th>
+							<th>제조사</th>
+							<th>열량</th>
+							<th>탄수화물</th>
+							<th>단백질</th>
+							<th>지방</th>
+							<th>담기</th>
+						</tr>
+					</thead>
+					<tbody id="processed-ingredients-list">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<!-- 원재료 조회 -->
+		<div id="raw-ingredients" class="mt-5">
+			<div class="d-flex align-items-center mb-3">
+				<span class="mr-2">원재료 검색</span>
+				<input id="raw-ingredients-keyword" placeholder="식품명">
+				<button id="raw-ingredients-search">검색</button>
+			</div>
+			
+			<div style="height:150px;" class="scroll border">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>상품명</th>
+							<th>열량</th>
+							<th>탄수화물</th>
+							<th>단백질</th>
+							<th>지방</th>
+							<th>담기</th>
+						</tr>
+					</thead>
+					<tbody id="raw-ingredients-list">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<!-- 커스텀 재료 등록 -->
+		<div id="my-ingredients" class="mt-5">
+			<div class="mb-3">
+				<span class="mr-2">커스텀 재료 등록</span>
+			</div>
+			
+			<div style="height:150px;" class="border">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>상품명</th>
+							<th>제조사</th>
+							<th>열량</th>
+							<th>탄수화물</th>
+							<th>단백질</th>
+							<th>지방</th>
+							<th>빼기</th>
+						</tr>
+					</thead>
+					<tbody id="my-ingredients-list">
+						<tr>
+							<td><input id="" class="form-control"></td>
+							<td><input id="" class="form-control"></td>
+							<td><input id="" class="form-control"></td>
+							<td><input id="" class="form-control"></td>
+							<td><input id="" class="form-control"></td>
+							<td><input id="" class="form-control"></td>
+							<td><button class="add-button">빼기</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+	<script>
+		$(document).ready(function() {
+			
+			// 가공식품 조회해서 table에 뿌리는 이벤트
+			$("#processed-ingredients-search").on("click", function() {
+				let keyword = $("#processed-ingredients-keyword").val().trim();
+				if (keyword.length < 2) {
+					alert("검색어는 2자 이상 입력하세요");
+					return;
+				}
+					
+				$.ajax({
+					type:"get"
+					,url:"/ingredient/processed?keyword=" + keyword
+					,dataType:"json"
+					,success:function(data) {
+						let processedTbody = $("#processed-ingredients-list"); 
+						processedTbody.empty();
+						data.forEach(function(item) {
+							let addButton = $("<button class='add-button' data-type='processed' data-id='" + item.id + "'>담기</button>");
+							let tr = $("<tr></tr>");
+							tr.append($("<td class='text-overflow-ellipsis' style='max-width:250px;'></td>").text(item.foodName));
+							tr.append($("<td class='text-overflow-ellipsis' style='max-width:150px;'></td>").text(item.manufacturer));
+							tr.append($("<td></td>").text(item.caloriePerServing));
+							tr.append($("<td></td>").text(item.carbohydratesPerServing));
+							tr.append($("<td></td>").text(item.proteinPerServing));
+							tr.append($("<td></td>").text(item.fatPerServing));
+							<!-- TODO 마크업 - 이미 담은 재료는 빼기 버튼으로 나타내기 -->
+							tr.append($("<td></td>").append(addButton));
+							
+							processedTbody.append(tr);
+						});
+					}
+					,error:function(e) {
+						let processedTbody = $("#processed-ingredients-list");
+						let tr = $("<tr></tr>");
+						processedTbody.empty();
+						tr.append($("<td></td>").text("조회 실패"));
+						processedTbody.append(tr);
+					}
+				});
+			}); // 가공식품 조회 끝
+			
+			// 원재료 조회
+			$("#raw-ingredients-search").on("click", function() {
+				let keyword = $("#raw-ingredients-keyword").val().trim();
+				if (keyword.length < 2) {
+					alert("검색어는 2자 이상 입력하세요");
+					return;
+				}
+					
+				$.ajax({
+					type:"get"
+					,url:"/ingredient/raw?keyword=" + keyword
+					,dataType:"json"
+					,success:function(data) {
+						let rawTbody = $("#raw-ingredients-list"); 
+						rawTbody.empty();
+						data.forEach(function(item) {
+							let addButton = $("<button class='add-button' data-type='raw' data-id='" + item.id + "'>담기</button>");
+							let tr = $("<tr></tr>");
+							tr.append($("<td class='text-overflow-ellipsis' style='max-width:300px;'></td>").text(item.foodName));
+							tr.append($("<td></td>").text(item.caloriePerServing));
+							tr.append($("<td></td>").text(item.carbohydratesPerServing));
+							tr.append($("<td></td>").text(item.proteinPerServing));
+							tr.append($("<td></td>").text(item.fatPerServing));
+							tr.append($("<td></td>").append(addButton));
+							
+							rawTbody.append(tr);
+						});
+					}
+					,error:function(e) {
+						let rawTbody = $("#raw-ingredients-list");
+						let tr = $("<tr></tr>");
+						rawTbody.empty();
+						tr.append($("<td></td>").text("조회 실패"));
+						rawTbody.append(tr);
+					}
+				});
+			}); // 원재료 조회 끝
+			
+			// 재료 담기
+			$(document).on("click", "button[class=add-button]", function() {
+				let ingredientType = $(this).data("type");
+				let ingredientId = $(this).data("id");
+				
+				$.ajax({
+					type:"post"
+					,url:location
+					,data:{"type":ingredientType, "ingredientId":ingredientId}
+					,success:function(data) {
+						alert(data.message);
+						<!-- TODO 마크업 - 재료 등록하면 새로고침할 것인가? -->
+					}
+					,error:function(e) {
+						alert("실패")
+					}
+				});
+				
+			});
+		});
+	</script>
+</th:block>

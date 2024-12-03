@@ -2,12 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kcalculator.user.ingredient.mapper.IngredientMapper">
+	
+	<!-- TODO id로 가공식품 가져오기 -->
+<!-- 	<select id="" parameterType="int" resultType=""> -->
+	
+<!-- 	</select> -->
+	
+	<!-- 상품명, 제조사명으로 가공식품 검색 -->
 	<select id="selectProcessedIngredientListMatchFoodNameAndManufacturer" parameterType="string" resultType="com.kcalculator.user.ingredient.dto.ProcessedIngredientDTO">
 		SELECT
 			`id`
 			,`food_code`
 			,`food_name`
 			,`product_code`
+			<!-- NOTE 가공식품 데이터에 상품 중량이 필요한가? -->
 			,`net_weight`
 			,`calorie_per_serving`
 			,`carbohydrates_per_serving`
@@ -19,10 +27,10 @@
 			`ingredient_processed`
 		WHERE
 			MATCH(`food_name`, `manufacturer`) AGAINST(#{keyword} IN BOOLEAN MODE)
-		LIMIT 30
 	</select>
 	
-	<select id="selectRawIngredientListMatchFoodNameAndManufacturer" parameterType="string" resultType="com.kcalculator.user.ingredient.dto.RawIngredientDTO">
+	<!-- 식품명으로 원재료 검색 -->
+	<select id="selectRawIngredientListMatchFoodName" parameterType="string" resultType="com.kcalculator.user.ingredient.dto.RawIngredientDTO">
 		SELECT
 			`id`
 			,`food_code`
@@ -35,6 +43,69 @@
 			`ingredient_raw`
 		WHERE
 			MATCH(`food_name`) AGAINST(#{keyword} IN BOOLEAN MODE)
-		LIMIT 30
 	</select>
+	
+	<!-- 내 재료(원재료/가공)에서 검색 -->
+	<select id="selectMyIngredientListMatchFoodName" parameterType="int" resultType="com.kcalculator.user.ingredient.dto.MyCustomIngredientDTO">
+		SELECT
+			`id`
+			,`user_id`
+			,`food_name`
+			,`net_weight`
+			,`calorie`
+			,`carbohydrates`
+			,`protein`
+			,`fat`
+		FROM
+			`ingredient_mine`
+		WHERE
+			`user_id` = #{userId} AND
+			MATCH(`food_name`) AGAINST(#{keyword} IN BOOLEAN MODE)
+	</select>
+	
+	<!-- 내 재료(커스텀)전부 가져오기 -->
+	<select id="selectMyCustomIngredientList" parameterType="int" resultType="com.kcalculator.user.ingredient.dto.MyCustomIngredientDTO">
+		SELECT
+			`id`
+			,`user_id`
+			,`food_name`
+			,`net_weight`
+			,`calorie`
+			,`carbohydrates`
+			,`protein`
+			,`fat`
+		FROM
+			`ingredient_mine_custom`
+		WHERE
+			`user_id` = #{userId}
+	</select>
+	
+	<!-- 내 재료(원재료/가공)정보 전부 가져오기 -->
+	<select id="selectMyIngredientList" parameterType="int" resultType="com.kcalculator.user.ingredient.dto.MyIngredientDTO">
+		SELECT
+			`id`
+			,`ingredient_id`
+			,`user_id`
+			,`type`
+		FROM
+			`ingredient_mine`
+		WHERE
+			`user_id` = #{userId}
+	</select>
+	
+	
+	<insert id="insertMyIngredient" parameterType="map">
+		INSERT INTO `ingredient_mine`
+		(
+			`user_id`
+			,`ingredient_id`
+			,`type`
+		)
+		VALUES
+		(
+			#{userId}
+			,#{ingredientId}
+			,#{type}
+		)
+	</insert>
 </mapper>

@@ -3,18 +3,16 @@
 		xmlns:th="http://www.thymeleaf.org"
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{layout/defaultLayout}">
-<th:block layout:fragment="nav" th:replace="~{fragments/nav1 :: nav}"></th:block>
 <section layout:fragment="content">
 	<div id="section-title">
-		<span>재료</span>
+		<span>내 재료</span>
 	</div>
 	<div id="section-content">
-		<!-- 가공식품 조회 -->
-		<div id="processed_ingredients">
+		<div id="processed-ingredients">
 			<div class="d-flex align-items-center mb-3">
-				<span class="mr-2">가공식품 조회</span>
-				<input id="processed_ingredients_keyword" placeholder="식품명, 제조사명">
-				<button id="processed_ingredients_search">검색</button>
+				<span class="mr-2">가공식품</span>
+				<input id="processed-ingredients-keyword" placeholder="식품명, 제조사명">
+				<button id="processed-ingredients-search">검색</button>
 			</div>
 			
 			<div style="height:150px;" class="scroll border">
@@ -30,123 +28,17 @@
 							<th>담기</th>
 						</tr>
 					</thead>
-					<tbody id="processed_ingredients_list">
+					<tbody id="processed-ingredients-list">
+						<tr th:each="myIngredient : ${myIngredients}"></tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
-		
-		<!-- 원재료 조회 -->
-		<div id="raw_ingredients" class="mt-5">
-			<div class="d-flex align-items-center mb-3">
-				<span class="mr-2">원재료 조회</span>
-				<input id="raw_ingredients_keyword" placeholder="식품명, 제조사명">
-				<button id="raw_ingredients_search">검색</button>
-			</div>
-			
-			<div style="height:150px;" class="scroll border">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>상품명</th>
-							<th>제조사</th>
-							<th>열량</th>
-							<th>탄수화물</th>
-							<th>단백질</th>
-							<th>지방</th>
-							<th>담기</th>
-						</tr>
-					</thead>
-					<tbody id="raw_ingredients_list">
-					</tbody>
-				</table>
-			</div>
-		</div>
-		
 	</div>
 </section>
 
 <th:block layout:fragment="script">
 	<script>
-		$(document).ready(function() {
-			
-			// 가공식품 조회해서 table에 뿌리는 이벤트
-			$("#processed_ingredients_search").on("click", function() {
-				let keyword = $("#processed_ingredients_keyword").val().trim();
-				if (keyword.length < 2) {
-					alert("검색어는 2자 이상 입력하세요");
-					return;
-				}
-					
-				$.ajax({
-					type:"get"
-					,url:"/ingredient/processed?keyword=" + keyword
-					,dataType:"json"
-					,success:function(data) {
-						let processedTbody = $("#processed_ingredients_list"); 
-						processedTbody.empty();
-						data.forEach(function(item) {
-							let addButton = $("<button data-id='" + item.id + "'>담기</button>");
-							let tr = $("<tr></tr>");
-							tr.append($("<td class='text-overflow-ellipsis' style='max-width:250px;'></td>").text(item.food_name));
-							tr.append($("<td class='text-overflow-ellipsis' style='max-width:150px;'></td>").text(item.manufacturer));
-							tr.append($("<td></td>").text(item.calorie_per_serving));
-							tr.append($("<td></td>").text(item.carbohydrates_per_serving));
-							tr.append($("<td></td>").text(item.protein_per_serving));
-							tr.append($("<td></td>").text(item.fat_per_serving));
-							tr.append($("<td></td>").append(addButton));
-							
-							processedTbody.append(tr);
-						});
-					}
-					,error:function(e) {
-						let processedTbody = $("#processed_ingredients_list");
-						let tr = $("<tr></tr>");
-						processedTbody.empty();
-						tr.append($("<td></td>").text("조회 실패"));
-						processedTbody.append(tr);
-					}
-				});
-			}); // 가공식품 조회 끝
-			
-			// 원재료 조회
-			$("#raw_ingredients_search").on("click", function() {
-				let keyword = $("#raw_ingredients_keyword").val().trim();
-				if (keyword.length < 2) {
-					alert("검색어는 2자 이상 입력하세요");
-					return;
-				}
-					
-				$.ajax({
-					type:"get"
-					,url:"/ingredient/raw?keyword=" + keyword
-					,dataType:"json"
-					,success:function(data) {
-						let rawTbody = $("#raw_ingredients_list"); 
-						rawTbody.empty();
-						data.forEach(function(item) {
-							let addButton = $("<button data-id='" + item.id + "'>담기</button>");
-							let tr = $("<tr></tr>");
-							tr.append($("<td class='text-overflow-ellipsis' style='max-width:300px;'></td>").text(item.food_name));
-							tr.append($("<td class='text-overflow-ellipsis' style='max-width:100px;'></td>").text(item.manufacturer));
-							tr.append($("<td></td>").text(item.calorie_per_serving));
-							tr.append($("<td></td>").text(item.carbohydrates_per_serving));
-							tr.append($("<td></td>").text(item.protein_per_serving));
-							tr.append($("<td></td>").text(item.fat_per_serving));
-							tr.append($("<td></td>").append(addButton));
-							
-							rawTbody.append(tr);
-						});
-					}
-					,error:function(e) {
-						let rawTbody = $("#raw_ingredients_list");
-						let tr = $("<tr></tr>");
-						rawTbody.empty();
-						tr.append($("<td></td>").text("조회 실패"));
-						rawTbody.append(tr);
-					}
-				});
-			}); // 원재료 조회 끝
-		});
+		
 	</script>
 </th:block>

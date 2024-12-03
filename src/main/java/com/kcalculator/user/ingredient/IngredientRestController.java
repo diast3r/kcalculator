@@ -21,14 +21,14 @@ public class IngredientRestController {
 	private final IngredientBO ingredientBO;
 	
 	@GetMapping("/processed")
-	public List<ProcessedIngredientDTO> getProcessedIngredientByKeyword(@RequestParam("keyword") String keyword) {
+	public List<ProcessedIngredientDTO> getProcessedIngredientMatchKeyword(@RequestParam("keyword") String keyword) {
 		
 		return ingredientBO.getProcessedIngredientListByKeyword(keyword);
 	}
 	
 	@GetMapping("/raw")
-	public List<RawIngredientDTO> getRawIngredientByKeyword(@RequestParam("keyword") String keyword) {
+	public List<RawIngredientDTO> getRawIngredientMatchKeyword(@RequestParam("keyword") String keyword) {
 		
-		return ingredientBO.getRawIngredientListByKeyword(keyword);
+		return ingredientBO.getRawIngredientListMatchKeyword(keyword);
 	}
 }

@@ -56,10 +56,9 @@
 				,enctype:"multipart/form-data"
 				,success:function(data) {
 					location.reload();
-					alert(data.message);
 				}
 				,error:function(e) {
-					alert("실패");
+					alert("잠시 후 다시 시도해주세요");
 				}
 			});
 			
