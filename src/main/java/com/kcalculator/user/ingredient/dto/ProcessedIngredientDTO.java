@@ -11,10 +11,10 @@ public class ProcessedIngredientDTO {
 	private String foodName;
 	private String productCode;
 	private String netWeight;
-	private int caloriePerServing;
-	private Double carbohydratesPerServing;
-	private double proteinPerServing;
-	private Double fatPerServing;
+	private int caloriePer100;
+	private Double carbohydratesPer100;
+	private double proteinPer100;
+	private Double fatPer100;
 	private String servingSize;
 	private String manufacturer;
 }

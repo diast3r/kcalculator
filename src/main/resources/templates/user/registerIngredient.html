@@ -122,10 +122,10 @@
 							let tr = $("<tr></tr>");
 							tr.append($("<td class='text-overflow-ellipsis' style='max-width:250px;'></td>").text(item.foodName));
 							tr.append($("<td class='text-overflow-ellipsis' style='max-width:150px;'></td>").text(item.manufacturer));
-							tr.append($("<td></td>").text(item.caloriePerServing));
-							tr.append($("<td></td>").text(item.carbohydratesPerServing));
-							tr.append($("<td></td>").text(item.proteinPerServing));
-							tr.append($("<td></td>").text(item.fatPerServing));
+							tr.append($("<td></td>").text(item.caloriePer100));
+							tr.append($("<td></td>").text(item.carbohydratesPer100));
+							tr.append($("<td></td>").text(item.proteinPer100));
+							tr.append($("<td></td>").text(item.fatPer100));
 							<!-- TODO 마크업 - 이미 담은 재료는 빼기 버튼으로 나타내기 -->
 							tr.append($("<td></td>").append(addButton));
 							
@@ -161,10 +161,10 @@
 							let addButton = $("<button class='add-button' data-type='raw' data-id='" + item.id + "'>담기</button>");
 							let tr = $("<tr></tr>");
 							tr.append($("<td class='text-overflow-ellipsis' style='max-width:300px;'></td>").text(item.foodName));
-							tr.append($("<td></td>").text(item.caloriePerServing));
-							tr.append($("<td></td>").text(item.carbohydratesPerServing));
-							tr.append($("<td></td>").text(item.proteinPerServing));
-							tr.append($("<td></td>").text(item.fatPerServing));
+							tr.append($("<td></td>").text(item.caloriePer100));
+							tr.append($("<td></td>").text(item.carbohydratesPer100));
+							tr.append($("<td></td>").text(item.proteinPer100));
+							tr.append($("<td></td>").text(item.fatPer100));
 							tr.append($("<td></td>").append(addButton));
 							
 							rawTbody.append(tr);
@@ -191,7 +191,7 @@
 					,data:{"type":ingredientType, "ingredientId":ingredientId}
 					,success:function(data) {
 						alert(data.message);
-						<!-- TODO 마크업 - 재료 등록하면 새로고침할 것인가? -->
+						<!-- TODO 마크업 - 재료 등록하면 새로고침할 것인가 -->
 					}
 					,error:function(e) {
 						alert("실패")

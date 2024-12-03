@@ -17,10 +17,10 @@
 			,`product_code`
 			<!-- NOTE 가공식품 데이터에 상품 중량이 필요한가? -->
 			,`net_weight`
-			,`calorie_per_serving`
-			,`carbohydrates_per_serving`
-			,`protein_per_serving`
-			,`fat_per_serving`
+			,`calorie_per_100`
+			,`carbohydrates_per_100`
+			,`protein_per_100`
+			,`fat_per_100`
 			,`serving_size`
 			,`manufacturer`
 		FROM
@@ -35,10 +35,10 @@
 			`id`
 			,`food_code`
 			,`food_name`
-			,`calorie_per_serving`
-			,`carbohydrates_per_serving`
-			,`protein_per_serving`
-			,`fat_per_serving`
+			,`calorie_per_100`
+			,`carbohydrates_per_100`
+			,`protein_per_100`
+			,`fat_per_100`
 		FROM
 			`ingredient_raw`
 		WHERE
