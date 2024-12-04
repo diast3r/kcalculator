@@ -93,7 +93,7 @@
 			`user_id` = #{userId}
 	</select>
 	
-	
+	<!-- 내 재료(원재료/가공) 등록 -->
 	<insert id="insertMyIngredient" parameterType="map">
 		INSERT INTO `ingredient_mine`
 		(
@@ -108,4 +108,28 @@
 			,#{type}
 		)
 	</insert>
+	
+	<insert id="insertMyCustomIngredient" parameterType="map">
+		INSERT INTO `ingredient_mine_custom`
+		(
+			`user_id`
+			,`food_name`
+			,`net_weight`
+			,`calorie`
+			,`carbohydrates`
+			,`protein`
+			,`fat`
+		)
+		VALUES
+		(
+			#{userId}
+			,#{foodName}
+			,#{netWeight}
+			,#{calorie}
+			,#{carbohydrates}
+			,#{protein}
+			,#{fat}
+		)
+	</insert>
+	
 </mapper>

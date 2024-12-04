@@ -54,5 +54,14 @@ public interface IngredientMapper {
 			@Param("userId") int userId,
 			@Param("ingredientId") int ingredientId, 
 			@Param("type") String type); // TODO 리팩토링 - type은 enum으로 만들기
+	
+	public int insertMyCustomIngredient(
+			@Param("userId") int userId,
+			@Param("foodName") String foodName,
+			@Param("netWeight") Integer netWeight, 
+			@Param("calorie") Integer calorie,
+			@Param("carbohydrates") Double carbohydrates,
+			@Param("protein") Double protein,
+			@Param("fat") Double fat);
 		
 }

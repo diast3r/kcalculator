@@ -3,6 +3,7 @@ package com.kcalculator.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,5 +89,35 @@ public class UserRestController {
 		
 		return result;
 	}
+	
+	// 재료 등록(커스텀)
+	@AuthRequired
+	@PostMapping("/{loginId}/ingredient/custom/register")
+	public Map<String, Object> registerMyCustomIngredient(
+			@RequestParam("foodName") String foodName,
+			@RequestParam("netWeight") Integer netWeight,
+			@RequestParam("calorie") Integer calorie,
+			@RequestParam("carbohydrates") Double carbohydrates,
+			@RequestParam("protein") Double protein,
+			@RequestParam("fat") Double fat,
+			HttpSession session) {
+		Integer userId = (Integer) session.getAttribute("id");
+		Assert.notNull(userId, "인증된 사용자만 요청 가능");
+		
+		Map<String, Object> result = new HashMap<>();
+		
+		// TODO 유효성 검사 - 커스텀 재료 등록 (Controller)
+		// TODO 기능 구현 - 커스텀 재료 등록
+		int rowCount = ingredientBO.addMyCustomIngredient(userId, foodName, netWeight, 
+				calorie, carbohydrates, protein, fat);
+		
+		if (rowCount > 0) {
+			result.put("code", 200);
+			result.put("message", "재료 추가 성공");
+		}
+		
+		return result;
+	}
+	
 	
 }

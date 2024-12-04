@@ -18,10 +18,10 @@
 			</div>
 			
 			<div style="height:150px;" class="scroll border">
-				<table class="table">
+				<table class="table text-center">
 					<thead>
 						<tr>
-							<th>상품명</th>
+							<th>식품명</th>
 							<th>제조사</th>
 							<th>열량</th>
 							<th>탄수화물</th>
@@ -45,10 +45,10 @@
 			</div>
 			
 			<div style="height:150px;" class="scroll border">
-				<table class="table">
+				<table class="table text-center">
 					<thead>
 						<tr>
-							<th>상품명</th>
+							<th>식품명</th>
 							<th>열량</th>
 							<th>탄수화물</th>
 							<th>단백질</th>
@@ -64,35 +64,37 @@
 		
 		<!-- 커스텀 재료 등록 -->
 		<div id="my-ingredients" class="mt-5">
-			<div class="mb-3">
+			<div class="mb-3 d-flex justify-content-between">
 				<span class="mr-2">커스텀 재료 등록</span>
+				<small>*중량 당 영양함량 기재</small>
 			</div>
 			
-			<div style="height:150px;" class="border">
+			<div class="border">
 				<table class="table">
 					<thead>
 						<tr>
-							<th>상품명</th>
-							<th>제조사</th>
-							<th>열량</th>
-							<th>탄수화물</th>
-							<th>단백질</th>
-							<th>지방</th>
-							<th>빼기</th>
+							<th>식품명</th>
+							<th>중량(g)</th>
+							<th>열량(kcal)</th>
+							<th>탄수화물(g)</th>
+							<th>단백질(g)</th>
+							<th>지방(g)</th>
+							<th>담기</th>
 						</tr>
 					</thead>
-					<tbody id="my-ingredients-list">
+					<tbody id="custom-ingredient-inputs">
 						<tr>
-							<td><input id="" class="form-control"></td>
-							<td><input id="" class="form-control"></td>
-							<td><input id="" class="form-control"></td>
-							<td><input id="" class="form-control"></td>
-							<td><input id="" class="form-control"></td>
-							<td><input id="" class="form-control"></td>
-							<td><button class="add-button">빼기</button></td>
+							<td><input id="food-name" class="form-control"></td>
+							<td><input id="net-weight" class="form-control"></td>
+							<td><input id="calorie" class="form-control"></td>
+							<td><input id="carbohydrates" class="form-control"></td>
+							<td><input id="protein" class="form-control"></td>
+							<td><input id="fat" class="form-control"></td>
+							<td><button data-type="custom" class="add-button" style="white-space:nowrap;">담기</button></td>
 						</tr>
 					</tbody>
 				</table>
+				
 			</div>
 		</div>
 	</div>
@@ -120,8 +122,8 @@
 						data.forEach(function(item) {
 							let addButton = $("<button class='add-button' data-type='processed' data-id='" + item.id + "'>담기</button>");
 							let tr = $("<tr></tr>");
-							tr.append($("<td class='text-overflow-ellipsis' style='max-width:250px;'></td>").text(item.foodName));
-							tr.append($("<td class='text-overflow-ellipsis' style='max-width:150px;'></td>").text(item.manufacturer));
+							tr.append($("<td class='text-ellipsis' style='max-width:250px;'></td>").text(item.foodName));
+							tr.append($("<td class='text-ellipsis' style='max-width:150px;'></td>").text(item.manufacturer));
 							tr.append($("<td></td>").text(item.caloriePer100));
 							tr.append($("<td></td>").text(item.carbohydratesPer100));
 							tr.append($("<td></td>").text(item.proteinPer100));
@@ -160,7 +162,7 @@
 						data.forEach(function(item) {
 							let addButton = $("<button class='add-button' data-type='raw' data-id='" + item.id + "'>담기</button>");
 							let tr = $("<tr></tr>");
-							tr.append($("<td class='text-overflow-ellipsis' style='max-width:300px;'></td>").text(item.foodName));
+							tr.append($("<td class='text-ellipsis' style='max-width:300px;'></td>").text(item.foodName));
 							tr.append($("<td></td>").text(item.caloriePer100));
 							tr.append($("<td></td>").text(item.carbohydratesPer100));
 							tr.append($("<td></td>").text(item.proteinPer100));
@@ -185,20 +187,46 @@
 				let ingredientType = $(this).data("type");
 				let ingredientId = $(this).data("id");
 				
-				$.ajax({
-					type:"post"
-					,url:location
-					,data:{"type":ingredientType, "ingredientId":ingredientId}
-					,success:function(data) {
-						alert(data.message);
-						<!-- TODO 마크업 - 재료 등록하면 새로고침할 것인가 -->
-					}
-					,error:function(e) {
-						alert("실패")
-					}
-				});
+				if (ingredientType != "custom") {
+					$.ajax({
+						type:"post"
+						,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/register"
+						,data:{"type":ingredientType, "ingredientId":ingredientId}
+						,success:function(data) {
+							alert(data.message);
+						}
+						,error:function(e) {
+							alert("실패")
+						}
+					});
 				
-			});
+				} else {
+					$.ajax({
+						type:"post"
+						,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/custom/register"
+						,data:{
+							<!-- TODO 유효성 검사 - 커스텀 재료 등록(js) -->
+							"foodName":$("#food-name").val().trim()
+							,"netWeight":$("#net-weight").val().trim()
+							,"calorie":$("#calorie").val().trim()
+							,"carbohydrates":$("#carbohydrates").val().trim()
+							,"protein":$("#protein").val().trim()
+							,"fat":$("#fat").val().trim()
+						}
+						,success:function(data) {
+							alert(data.message);
+						}
+						,error:function(e) {
+							alert("실패")
+						}
+					})
+				}
+				
+				
+				
+			}); // 재료 담기 끝
+			
+			
 		});
 	</script>
 </th:block>

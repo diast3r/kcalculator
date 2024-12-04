@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kcalculator.user.ingredient.dto.MyCustomIngredientDTO;
 import com.kcalculator.user.ingredient.dto.MyIngredientDTO;
@@ -39,4 +40,8 @@ public class IngredientBO {
 		return ingredientMapper.insertMyIngredient(userId, ingredientId, type);
 	}
 	
+	public int addMyCustomIngredient(int userId, String foodName, Integer netWeight, 
+			Integer calorie, Double carbohydrates, Double protein, Double fat) {
+		return ingredientMapper.insertMyCustomIngredient(userId, foodName, netWeight, calorie, carbohydrates, protein, fat);
+	}
 }

@@ -70,7 +70,11 @@ section {
 	overflow-y:scroll;
 }
 
-.text-overflow-ellipsis {
+.inline {
+	white-space:nowrap;
+}
+
+.text-ellipsis {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
