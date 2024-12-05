@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ProcessedIngredientDTO {
+	// TODO 유효성 검사 - ProcessedIngredientDTO
 	private int id;
 	private String foodCode;
 	private String foodName;

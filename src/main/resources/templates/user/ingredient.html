@@ -3,17 +3,14 @@
 		xmlns:th="http://www.thymeleaf.org"
 		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		layout:decorate="~{layout/defaultLayout}">
+<th:block layout:fragment="nav" th:replace="~{fragments/nav1 :: nav}"></th:block>
 <section layout:fragment="content">
 	<div id="section-title">
 		<span>내 재료</span>
 	</div>
 	<div id="section-content">
 		<div id="processed-ingredients">
-			<div class="d-flex align-items-center mb-3">
-				<span class="mr-2">가공식품</span>
-				<input id="processed-ingredients-keyword" placeholder="식품명, 제조사명">
-				<button id="processed-ingredients-search">검색</button>
-			</div>
+			<span class="mr-2">가공식품</span>
 			
 			<div style="height:150px;" class="scroll border">
 				<table class="table">
@@ -25,20 +22,181 @@
 							<th>탄수화물</th>
 							<th>단백질</th>
 							<th>지방</th>
-							<th>담기</th>
+							<th>빼기</th>
 						</tr>
 					</thead>
-					<tbody id="processed-ingredients-list">
-						<tr th:each="myIngredient : ${myIngredients}"></tr>
-					</tbody>
+					<tbody id="processed-ingredients-list"></tbody>
 				</table>
 			</div>
 		</div>
+		
+		<!-- 원재료 -->
+		<div id="raw-ingredients">
+			<span class="mr-2">원재료</span>
+			
+			<div style="height:150px;" class="scroll border">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>상품명</th>
+							<th>열량</th>
+							<th>탄수화물</th>
+							<th>단백질</th>
+							<th>지방</th>
+							<th>빼기</th>
+						</tr>
+					</thead>
+					<tbody id="raw-ingredients-list"></tbody>
+				</table>
+			</div>
+		</div>
+		
+		<!-- 커스텀 재료 -->
+		<span>커스텀</span>
+		<div class="border">
+			<table class="table text-center">
+				<thead>
+					<tr>
+						<th>상품명</th>
+						<th>중량</th>
+						<th>열량</th>
+						<th>탄수화물</th>
+						<th>단백질</th>
+						<th>지방</th>
+						<th>빼기</th>
+					</tr>
+				</thead>
+				<tbody id="custom-ingredients-list">
+				
+				</tbody>
+			</table>
+		</div>
+		
 	</div>
 </section>
 
 <th:block layout:fragment="script">
 	<script>
-		
+		$(document).ready(function() {
+			
+			// 내 가공식품 리스트 가져오기
+			$.ajax({
+				type:"get"
+				,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/get?type=processed"
+				,dataType:"json"
+				,success:function(data) {
+					if (data.result == null) {
+						return;
+					}
+					let processedTbody = $("#processed-ingredients-list");
+					data.result.forEach(function(item) {
+						let deleteButton = $("<button class='delete-button' data-type='processed' data-id='" + item.id + "'>빼기</button>");
+						let tr = $("<tr></tr>");
+						tr.append($("<td class='text-ellipsis' style='max-width:300px;'></td>").text(item.foodName));
+						tr.append($("<td></td>").text(item.manufacturer));
+						tr.append($("<td></td>").text(item.caloriePer100));
+						tr.append($("<td></td>").text(item.carbohydratesPer100));
+						tr.append($("<td></td>").text(item.proteinPer100));
+						tr.append($("<td></td>").text(item.fatPer100));
+						tr.append($("<td></td>").append(deleteButton));
+						
+						processedTbody.append(tr);
+					});
+				}
+			}); // 가공식품 가져오기
+			
+			
+			// 내 원재료 리스트 가져오기
+			$.ajax({
+				type:"get"
+				,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/get?type=raw"
+				,dataType:"json"
+				,success:function(data) {
+					if (data.result == null) {
+						return;
+					}
+					let rawTbody = $("#raw-ingredients-list");
+					data.result.forEach(function(item) {
+						let deleteButton = $("<button class='delete-button' data-type='raw' data-id='" + item.id + "'>빼기</button>");
+						let tr = $("<tr></tr>");
+						tr.append($("<td class='text-ellipsis' style='max-width:300px;'></td>").text(item.foodName));
+						tr.append($("<td></td>").text(item.caloriePer100));
+						tr.append($("<td></td>").text(item.carbohydratesPer100));
+						tr.append($("<td></td>").text(item.proteinPer100));
+						tr.append($("<td></td>").text(item.fatPer100));
+						tr.append($("<td></td>").append(deleteButton));
+						
+						rawTbody.append(tr);
+					});
+				}
+			}); // 원재료 가져오기
+			
+			// 내 커스텀 재료 가져오기
+			$.ajax({
+				type:"get"
+				,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/custom/get"
+				,dataType:"json"
+				,success:function(data) {
+					if (data.result == null) {
+						return;
+					}
+					let rawTbody = $("#custom-ingredients-list");
+					data.result.forEach(function(item) {
+						let deleteButton = $("<button class='delete-button' data-type='custom' data-id='" + item.id + "'>빼기</button>");
+						let tr = $("<tr></tr>");
+						tr.append($("<td id='food-name' class='text-ellipsis' style='max-width:300px;'></td>").text(item.foodName));
+						tr.append($("<td id='net-weight'></td>").text(item.netWeight));
+						tr.append($("<td id='calorie'></td>").text(item.calorie));
+						tr.append($("<td id='carbohydrates'></td>").text(item.carbohydrates));
+						tr.append($("<td id='protein'></td>").text(item.protein));
+						tr.append($("<td id='fat'></td>").text(item.fat));
+						tr.append($("<td></td>").append(deleteButton));
+						
+						rawTbody.append(tr);
+					});
+				}
+			});
+			
+			// 재료 빼기
+			$(document).on("click", "button[class=delete-button]", function() {
+				let ingredientType = $(this).data("type");
+				let ingredientId = $(this).data("id");
+				
+				if (ingredientType != "custom") {
+					$.ajax({
+						type:"post"
+						,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/delete"
+						,data:{"type":ingredientType, "ingredientId":ingredientId}
+						,success:function(data) {
+							alert(data.message);
+						}
+						,error:function(e) {
+							alert("실패")
+						}
+					});
+				
+				} else {
+					$.ajax({
+						type:"post"
+						,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/custom/delete"
+						,data:{
+							"foodName":$("#food-name").val().trim()
+							,"netWeight":$("#net-weight").val().trim()
+							,"calorie":$("#calorie").val().trim()
+							,"carbohydrates":$("#carbohydrates").val().trim()
+							,"protein":$("#protein").val().trim()
+							,"fat":$("#fat").val().trim()
+						}
+						,success:function(data) {
+							alert(data.message);
+						}
+						,error:function(e) {
+							alert("실패")
+						}
+					})
+				}
+				
+			}); // 재료 담기 끝
+		});
 	</script>
 </th:block>

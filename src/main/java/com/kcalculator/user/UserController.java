@@ -1,5 +1,8 @@
 package com.kcalculator.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +13,8 @@ import com.kcalculator.account.bo.UserBO;
 import com.kcalculator.account.dto.UserSimpleDTO;
 import com.kcalculator.common.annotation.AuthRequired;
 import com.kcalculator.user.ingredient.bo.IngredientBO;
+import com.kcalculator.user.ingredient.dto.IngredientDTO;
+import com.kcalculator.user.ingredient.dto.MyIngredientDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -53,14 +58,13 @@ public class UserController {
 		return "user/registerIngredient";
 	}
 	
+	// 내 재료
 	@AuthRequired
 	@GetMapping("/{loginId}/ingredient")
 	public String ingredient(HttpSession session, Model model) {
-		Integer userId = (Integer) session.getAttribute("id");
+		String loginId = (String)session.getAttribute("loginId");
 		
-		model.addAttribute("myIngredient", ingredientBO.getMyIngredientList(userId));
-		model.addAttribute("myCustomIngredients", ingredientBO.getMyCustomIngredientList(userId));
-		
+		model.addAttribute("user", userBO.getUserProfileByLoginId(loginId));
 		return "user/ingredient";
 	}
 }

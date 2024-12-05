@@ -2,9 +2,7 @@ package com.kcalculator.user.ingredient.bo;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kcalculator.user.ingredient.dto.MyCustomIngredientDTO;
 import com.kcalculator.user.ingredient.dto.MyIngredientDTO;
@@ -41,7 +39,23 @@ public class IngredientBO {
 	}
 	
 	public int addMyCustomIngredient(int userId, String foodName, Integer netWeight, 
-			Integer calorie, Double carbohydrates, Double protein, Double fat) {
+			Integer calorie, Double carbohydrates, Double protein,Double fat) {
 		return ingredientMapper.insertMyCustomIngredient(userId, foodName, netWeight, calorie, carbohydrates, protein, fat);
 	}
+	
+	public boolean isDuplicateIngredient(int userId, int ingredientId, String type) {
+			// List<MyIngredientDTO> myIngredientList = ingredientMapper.selectMyIngredientList(userId);
+			// myIngredientList가 userId, ingredientId, type을 가지고 있는지 검사
+		return false;
+	}
+	
+	public List<ProcessedIngredientDTO> getProcessedIngredientListByIdList(List<Integer> ingredientIdList) {
+		// TODO type을 enum으로 만들기
+		return ingredientMapper.selectProcessedIngredientListByIdList(ingredientIdList);
+	}
+	
+	public List<RawIngredientDTO> getRawIngredientListByIdList(List<Integer> ingrdientIdList) {
+		return ingredientMapper.selectRawIngredientListByIdList(ingrdientIdList);
+	}
+	
 }

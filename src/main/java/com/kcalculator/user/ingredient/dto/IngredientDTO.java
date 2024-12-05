@@ -1,12 +1,6 @@
 package com.kcalculator.user.ingredient.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-
-@Getter
-@Builder
-public class RawIngredientDTO {
-	// TODO 유효성 검사 - RawIngredientDTO
+public class IngredientDTO {
 	private int id;
 	private String foodCode;
 	private String foodName;

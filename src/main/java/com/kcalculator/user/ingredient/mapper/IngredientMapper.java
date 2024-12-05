@@ -43,11 +43,13 @@ public interface IngredientMapper {
 	
 	// TODO selectMyIngredientListMatchFoodName 내 재료(원재료/가공) 검색하기
 	
-	// TODO selectIngredientByIdList(List<Integer> idList) 재료(원재료/가공) id 리스트로 조회
 	
-	// TODO selectMyCustomIngredientList 내 재료(커스텀) 전부 가져오기
+	// id List로 재료(가공) List 가져오기
+	public List<ProcessedIngredientDTO> selectProcessedIngredientListByIdList(List<Integer> idList);
 	
-	// TODO selectMyIngredientList 내 재료(원재료/가공) 정보 전부 가져오기
+	// id List로 재료(원재료) List 가져오기
+	public List<RawIngredientDTO> selectRawIngredientListByIdList(List<Integer> idList);
+	
 	
 	// 내 재료(원재료/가공식품) 등록
 	public int insertMyIngredient(

@@ -201,11 +201,11 @@
 					});
 				
 				} else {
+					<!-- TODO 유효성 검사 - 커스텀 재료 등록(js) -->
 					$.ajax({
 						type:"post"
 						,url:"/user/" + "[[${session.loginId}]]" + "/ingredient/custom/register"
 						,data:{
-							<!-- TODO 유효성 검사 - 커스텀 재료 등록(js) -->
 							"foodName":$("#food-name").val().trim()
 							,"netWeight":$("#net-weight").val().trim()
 							,"calorie":$("#calorie").val().trim()
@@ -222,10 +222,7 @@
 					})
 				}
 				
-				
-				
 			}); // 재료 담기 끝
-			
 			
 		});
 	</script>

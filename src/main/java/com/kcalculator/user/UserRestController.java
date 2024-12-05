@@ -1,9 +1,14 @@
 package com.kcalculator.user;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kcalculator.account.bo.UserBO;
 import com.kcalculator.common.annotation.AuthRequired;
 import com.kcalculator.user.ingredient.bo.IngredientBO;
+import com.kcalculator.user.ingredient.dto.MyIngredientDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +80,6 @@ public class UserRestController {
 			HttpSession session) {
 		Map<String, Object> result = new HashMap<>();
 		int userId = (Integer) session.getAttribute("id");
-		// TODO 기능 구현 - 재료가 이미 담겨있는지 확인
 		
 		int rowCount = ingredientBO.addMyIngredient(userId, ingredientId, type);
 		
@@ -107,7 +112,6 @@ public class UserRestController {
 		Map<String, Object> result = new HashMap<>();
 		
 		// TODO 유효성 검사 - 커스텀 재료 등록 (Controller)
-		// TODO 기능 구현 - 커스텀 재료 등록
 		int rowCount = ingredientBO.addMyCustomIngredient(userId, foodName, netWeight, 
 				calorie, carbohydrates, protein, fat);
 		
@@ -119,5 +123,61 @@ public class UserRestController {
 		return result;
 	}
 	
+	// 재료 갸져오기(원재료/가공)
+	@AuthRequired
+	@GetMapping("/{loginId}/ingredient/get")
+	public Map<String, Object> getMyIngredientList(
+			HttpSession session, 
+			@RequestParam("type") String type) {
+		Integer userId = (Integer) session.getAttribute("id");
+		
+		Map<String, Object> result = new HashMap<>();
+		List<Integer> idList;
+		
+		if (Objects.equals(type, "processed")) {
+			idList = new ArrayList<>();
+			
+			for (MyIngredientDTO myIngredient: ingredientBO.getMyIngredientList(userId)) {
+				if (Objects.equals(myIngredient.getType(), type)) {
+					idList.add(myIngredient.getIngredientId());
+				}
+			}
+			
+			result.put("code", 200);
+			result.put("result", ingredientBO.getProcessedIngredientListByIdList(idList));
+			
+		}
+		
+		if (Objects.equals(type, "raw")) {
+			idList = new ArrayList<>();	
+			
+			for (MyIngredientDTO myIngredient: ingredientBO.getMyIngredientList(userId)) {
+				if (Objects.equals(myIngredient.getType(), "raw")) {
+					idList.add(myIngredient.getIngredientId());
+				}
+			}	
+			
+			result.put("code", 200);
+			result.put("result", ingredientBO.getRawIngredientListByIdList(idList));
+		}
+		result.put("code", 500);
+		result.put("message", "조회 실패");
+		return result;
+	}
+	
+	@AuthRequired
+	@GetMapping("/{loginId}/ingredient/custom/get")
+	// 재료 가져오기(커스텀)
+	public Map<String, Object> getMyCustomIngredientList(HttpSession session) {
+		Integer userId = (Integer)session.getAttribute("id");
+		
+		Map<String, Object> result = new HashMap<>();
+		
+		result.put("code", 200);
+		result.put("result", ingredientBO.getMyCustomIngredientList(userId));
+		result.put("message", "성공");
+		
+		return result;
+	}
 	
 }

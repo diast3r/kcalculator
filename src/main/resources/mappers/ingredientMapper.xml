@@ -2,11 +2,60 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kcalculator.user.ingredient.mapper.IngredientMapper">
+
+	<!-- NOTE db에서 ingredient_processed와 ingredient_raw를 합친다면 쓸 것. -->
+	<!-- <resultMap id="ingredient" type="com.kcalculator.user.ingredient.dto.IngredientDTO">
+		<id column="id" property="id" />
+		<result column="food_code" property="foodCode" />
+		<result column="food_name" property="foodName" />
+		<result column="calorie_per_100" property="caloriePer100" />
+		<result column="carbohydrates_per_100" property="carbohydratesPer100" />
+		<result column="protein_per_100" property="proteinPer100" />
+		<result column="fat_per_100" property="fatPer100" />
+	</resultMap>
 	
-	<!-- TODO id로 가공식품 가져오기 -->
-<!-- 	<select id="" parameterType="int" resultType=""> -->
+	<resultMap id="processedIngredient" extends="ingredient" 
+	type="com.kcalculator.user.ingredient.dto.ProcessedIngredientDTO">
+		<result column="product_code" property="productCode" />
+		<result column="net_weight" property="netWeight" />
+		<result column="serving_size" property="servingSize" />
+		<result column="manufacturer" property="manufacturer" />
+	</resultMap>
 	
-<!-- 	</select> -->
+	<resultMap id="rawIngredient" extends="ingredient" 
+	type="com.kcalculator.user.ingredient.dto.RawIngredientDTO">
+	</resultMap> -->
+	
+	<select id="selectProcessedIngredientListByIdList" parameterType="list" 
+	resultType="com.kcalculator.user.ingredient.dto.ProcessedIngredientDTO">
+		SELECT
+			*
+		FROM
+			`ingredient_processed`
+		WHERE
+			`id` IN
+			(
+			<foreach item="id" collection="list" separator=",">
+				#{id}
+			</foreach>
+			)
+	</select>
+	
+	<select id="selectRawIngredientListByIdList" parameterType="list" 
+	resultType="com.kcalculator.user.ingredient.dto.RawIngredientDTO">
+		SELECT
+			*
+		FROM
+			`ingredient_raw`
+		WHERE
+			`id` IN
+			(
+			<foreach item="id" collection="list" separator=",">
+				#{id}
+			</foreach>
+			)
+	</select>
+	
 	
 	<!-- 상품명, 제조사명으로 가공식품 검색 -->
 	<select id="selectProcessedIngredientListMatchFoodNameAndManufacturer" parameterType="string" resultType="com.kcalculator.user.ingredient.dto.ProcessedIngredientDTO">
